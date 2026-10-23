@@ -1,5 +1,5 @@
 This is an open tranching model for general defi usecase built around https://github.com/centrifuge/tinlake.git (legacy code base from centrifuge v2, deprecated now but few pools 
-are still active on mainnet). The sole purpose of Hooke (motivated from the architecture of MD and centrifuge's tinlake) is to immersify the 
+are still active on mainnet). The sole purpose of Hooke (motivated from the architecture of centrifuge's tinlake) is to immersify the 
 the ongoing research on defi native tranching and bootstrapping the build complexity for developers and 
 community. 
 
