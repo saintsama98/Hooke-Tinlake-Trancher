@@ -2,6 +2,8 @@
 
 A two tranche lending pool rebuilt from Centrifuge's Tinlake, with the waterfall rules written down and tested.
 
+> This project was developed privately and published once it had been tested against its original design. Its full development history is published on a single `main` branch so reviewers can follow it in one place.
+
 Hooke is an open tranching model for general DeFi use, built around [Centrifuge's Tinlake](https://github.com/centrifuge/tinlake), the legacy codebase from Centrifuge v2. Tinlake is deprecated, but it ran with complete live onchain activity until 2023 and a few of its pools are still active on mainnet. Hooke keeps the architecture that motivated it and adds its own research and development on the systematic waterfall, so the codebase can evolve into a product or serve as an extension of the open research.
 
 The purpose of Hooke is to deepen the ongoing research on DeFi native tranching and to lower the build complexity for developers and the community. It provides the contract side context for the research and data in [Awesome-Tranching](https://github.com/saintsama98/Awesome-Tranching), which is the official source for Hooke.
