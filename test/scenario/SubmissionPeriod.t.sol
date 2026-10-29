@@ -2,9 +2,9 @@
 pragma solidity 0.8.28;
 
 import "forge-std/Test.sol";
-import "../../script/deployer.sol";
-import "../mock/currency.sol";
-import "../mock/navfeed.sol";
+import "../../script/LenderDeployer.s.sol";
+import "../mocks/SimpleToken.sol";
+import "../mocks/SimpleNAVFeed.sol";
 
 /// @notice The second exit from `closeEpoch`: what happens when the orders on the
 ///         table cannot all be filled without breaching the pool's risk band.
@@ -32,7 +32,7 @@ contract SubmissionPeriodTest is Test {
     Operator juniorOp;
     Tranche seniorTranche;
     Tranche juniorTranche;
-    assessor assessor_;
+    Assessor assessor_;
 
     address alice = address(0xA11CE);
     address bob = address(0xB0B);

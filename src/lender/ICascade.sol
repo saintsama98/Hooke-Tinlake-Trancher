@@ -81,7 +81,7 @@ interface ICascade {
     /// @notice Net asset value of the pool, as reported by the valuation module.
     /// @return The current net asset value, in the underlying asset.
     /// @dev Read only. An implementation that has to settle an accrual before it can
-    /// report exposes that separately. See NavLike.calcUpdateNAV.
+    /// report exposes that separately. See INavLike.calcUpdateNAV.
     function getNav() external view returns (uint256);
 
     /// @notice Split an amount of the underlying asset across the tranches.

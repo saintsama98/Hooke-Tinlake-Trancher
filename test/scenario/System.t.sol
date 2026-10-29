@@ -2,9 +2,9 @@
 pragma solidity 0.8.28;
 
 import "forge-std/Test.sol";
-import "../../script/deployer.sol";
-import "../mock/currency.sol";
-import "../mock/navfeed.sol";
+import "../../script/LenderDeployer.s.sol";
+import "../mocks/SimpleToken.sol";
+import "../mocks/SimpleNAVFeed.sol";
 
 /// @notice A full pool, wired by `LenderDeployer`, driven through complete epochs.
 ///
@@ -24,8 +24,8 @@ contract SystemTest is Test {
     ///      is itself an external call, so it consumes a pending `vm.prank` or
     ///      `vm.expectRevert` and the cheatcode lands on the getter instead of the call
     ///      under test. A very easy way to write a test that passes for the wrong reason.
-    idle reserve;
-    assessor assessor_;
+    Idle reserve;
+    Assessor assessor_;
     EpochCoordinator coordinator;
     Tranche seniorTranche;
     Tranche juniorTranche;

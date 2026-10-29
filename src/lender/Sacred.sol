@@ -2,8 +2,8 @@
 // Modified from Centrifuge Tinlake src/lender/definitions.sol and coordinator.sol. See NOTICE.
 pragma solidity 0.8.28;
 
-import "../math/math.sol";
-import "../fixed_point.sol";
+import "../math/Math.sol";
+import "../FixedPoint.sol";
 
 /// @title sacred
 /// @notice The ratio arithmetic shared by the assessor and the coordinator, together
@@ -18,11 +18,11 @@ import "../fixed_point.sol";
 ///
 /// @dev The senior tranche state lives here for the same reason. It is the only
 /// mutable state in this file and it is internal. The assessor may move it, the
-/// coordinator may only read it back through AssessorLike, and nothing else touches it.
+/// coordinator may only read it back through IAssessorLike, and nothing else touches it.
 ///
 /// @dev Everything else here is pure, so the ratio arithmetic can be fuzzed on its own
-/// without deploying a pool or a valuation feed. See test/lender/sacred.t.sol.
-abstract contract sacred is Math {
+/// without deploying a pool or a valuation feed. See test/unit/Sacred.t.sol.
+abstract contract Sacred is Math {
     /// @notice Senior claim that earns interest.
     uint256 internal seniorDebt_;
 

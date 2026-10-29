@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/assessor.sol. See NOTICE.
+// Modified from Centrifuge Tinlake src/lender/Assessor.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
-import "../math/math.sol";
-import "./sacred.sol";
-import "../fixed_point.sol";
-import "../auth/auth.sol";
-import "../math/interest.sol";
-import "./interfaces.sol";
+import "../math/Math.sol";
+import "./Sacred.sol";
+import "../FixedPoint.sol";
+import "../auth/Auth.sol";
+import "../math/Interest.sol";
+import "./Interfaces.sol";
 import "./ICascade.sol";
 
 /// @title assessor
@@ -31,7 +31,7 @@ import "./ICascade.sol";
 /// senior asset value. The split is recomputed against the new senior ratio each epoch,
 /// which is what fillSeniorDebt does. Held as one number instead, the pool would pay
 /// senior interest out of junior equity on cash that is financing nothing.
-contract assessor is Math, sacred, Auth, Interest, ICascade {
+contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// @notice Current share of total assets claimed by the senior tranche, in 27
     /// decimal fixed point.
     Fixed27 public seniorRatio;
@@ -57,10 +57,10 @@ contract assessor is Math, sacred, Auth, Interest, ICascade {
 
     /// @dev A lending adapter is deliberately absent and can be added later.
 
-    TrancheLike public seniorTranche;
-    TrancheLike public juniorTranche;
-    NavLike public navFeed;
-    IdleLike public reserve;
+    ITrancheLike public seniorTranche;
+    ITrancheLike public juniorTranche;
+    INavLike public navFeed;
+    IIdleLike public reserve;
 
     /// @notice Seniority indices. 0 is the most senior, as ICascade requires.
     uint256 public constant SENIOR = 0;
@@ -100,13 +100,13 @@ contract assessor is Math, sacred, Auth, Interest, ICascade {
 
     function depend(bytes32 contractName, address addr) public auth {
         if (contractName == "navFeed") {
-            navFeed = NavLike(addr);
+            navFeed = INavLike(addr);
         } else if (contractName == "reserve") {
-            reserve = IdleLike(addr);
+            reserve = IIdleLike(addr);
         } else if (contractName == "seniorTranche") {
-            seniorTranche = TrancheLike(addr);
+            seniorTranche = ITrancheLike(addr);
         } else if (contractName == "juniorTranche") {
-            juniorTranche = TrancheLike(addr);
+            juniorTranche = ITrancheLike(addr);
         } else {
             revert UnknownParameter();
         }

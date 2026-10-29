@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/coordinator.sol. See NOTICE.
+// Modified from Centrifuge Tinlake src/lender/EpochCoordinator.sol. See NOTICE.
 pragma solidity 0.8.28;
 
-import "../math/math.sol";
-import "../fixed_point.sol";
-import "../auth/auth.sol";
-import "./sacred.sol";
-import "./interfaces.sol";
+import "../math/Math.sol";
+import "../FixedPoint.sol";
+import "../auth/Auth.sol";
+import "./Sacred.sol";
+import "./Interfaces.sol";
 
 /// @title EpochCoordinator
 /// @author adiii.eth
@@ -40,7 +40,7 @@ import "./interfaces.sol";
 /// subscriptions and senior before junior, is one reasonable answer. scoreSolution is
 /// virtual for that reason. Overriding it changes the policy of a pool without
 /// touching a constraint.
-contract EpochCoordinator is Auth, Math, sacred {
+contract EpochCoordinator is Auth, Math, Sacred {
     struct Order {
         // all variables are stored in currency
         uint256 seniorRedeem;
@@ -80,10 +80,10 @@ contract EpochCoordinator is Auth, Math, sacred {
     bool public poolClosing;
     bool public gotFullValidSolution;
 
-    IdleLike public idleReserve;
-    AssessorLike public assessor;
-    EpochTrancheLike public juniorTranche;
-    EpochTrancheLike public seniorTranche;
+    IIdleLike public idleReserve;
+    IAssessorLike public assessor;
+    IEpochTrancheLike public juniorTranche;
+    IEpochTrancheLike public seniorTranche;
 
     /// @notice The full order book of the epoch, in currency.
     Order public order;
@@ -161,13 +161,13 @@ contract EpochCoordinator is Auth, Math, sacred {
 
     function depend(bytes32 contractName, address addr) public auth {
         if (contractName == "assessor") {
-            assessor = AssessorLike(addr);
+            assessor = IAssessorLike(addr);
         } else if (contractName == "juniorTranche") {
-            juniorTranche = EpochTrancheLike(addr);
+            juniorTranche = IEpochTrancheLike(addr);
         } else if (contractName == "seniorTranche") {
-            seniorTranche = EpochTrancheLike(addr);
+            seniorTranche = IEpochTrancheLike(addr);
         } else if (contractName == "reserve") {
-            idleReserve = IdleLike(addr);
+            idleReserve = IIdleLike(addr);
         } else {
             revert UnknownParameter();
         }

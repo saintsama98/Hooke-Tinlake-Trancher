@@ -2,13 +2,13 @@
 pragma solidity 0.8.28;
 
 import "forge-std/Test.sol";
-import "../../src/lender/sacred.sol";
+import "../../src/lender/Sacred.sol";
 
 /// @dev `sacred` is abstract because it is meant to be inherited, not deployed.
 ///      Fuzzing it needs a concrete shell and nothing else: every function under test
 ///      is `pure`, so there is no pool to stand up, no NAV feed to mock, and no epoch
 ///      to advance. That is the payoff for keeping the ratio arithmetic stateless.
-contract SacredHarness is sacred {}
+contract SacredHarness is Sacred {}
 
 /// @notice Invariants I1 and I3 from ICascade, checked directly on the arithmetic.
 ///

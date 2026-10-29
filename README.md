@@ -16,16 +16,16 @@ The purpose of Hooke is to deepen the ongoing research on DeFi native tranching 
 
 ## Architecture
 
-A complete pool with two tranches is nine contracts. [`script/deployer.sol`](script/deployer.sol) deploys and wires them, and [`src/lender/interfaces.sol`](src/lender/interfaces.sol) declares every call one contract makes into another, so the whole architecture can be read on one page.
+A complete pool with two tranches is nine contracts. [`script/LenderDeployer.s.sol`](script/LenderDeployer.s.sol) deploys and wires them, and [`src/lender/Interfaces.sol`](src/lender/Interfaces.sol) declares every call one contract makes into another, so the whole architecture can be read on one page.
 
 | Layer | Contracts | Role |
 |---|---|---|
 | Tranches | `Tranche` (one per seniority class) | Owns user orders and escrow. Knows nothing about seniority, the other tranches or risk. |
-| Cash | `idle` | The reserve: currency at rest between epochs. Knows nothing else. |
-| Valuation | `assessor`, with `sacred.sol` | Owns the net asset value, the ratios, the token prices and the waterfall itself. Holds no cash. |
+| Cash | `Idle` | The reserve: currency at rest between epochs. Knows nothing else. |
+| Valuation | `Assessor`, with `Sacred.sol` | Owns the net asset value, the ratios, the token prices and the waterfall itself. Holds no cash. |
 | Orchestration | `EpochCoordinator` | Opens and closes epochs, checks a proposed allocation and executes it. Holds no cash and computes no valuation. |
 | Access | `Operator` (one per tranche) | The only caller allowed to place orders on its tranche. Checks an optional memberlist. |
-| Seams | `interfaces.sol`, `ICascade.sol` | Every cross contract call, and the waterfall interface this work is trying to generalise. |
+| Seams | `Interfaces.sol`, `ICascade.sol` | Every cross contract call, and the waterfall interface this work is trying to generalise. |
 
 ### An epoch, in order
 
@@ -45,19 +45,19 @@ This is a structural reference, not a product. It compiles, it is tested, and th
 
 ### Reading order
 
-1. `src/lender/interfaces.sol` - the whole architecture on one page. Four actors and
+1. `src/lender/Interfaces.sol` - the whole architecture on one page. Four actors and
 the calls between them.
-2. `test/lender/sacred.t.sol` - the invariants, fuzzed against the arithmetic alone.
+2. `test/unit/Sacred.t.sol` - the invariants, fuzzed against the arithmetic alone.
 If you keep nothing else, keep these.
-3. `test/lender/system.t.sol` - a pool being driven through complete epochs.
-4. `script/deployer.sol` - nine contracts, who knows whom, and who may mutate whom.
+3. `test/scenario/System.t.sol` - a pool being driven through complete epochs.
+4. `script/LenderDeployer.s.sol` - nine contracts, who knows whom, and who may mutate whom.
 5. `src/lender/ICascade.sol` - the interface this work is trying to generalise.
 
 ## What is load-bearing and what is yours to change
 
-The **four-actor split** is the point. `tranche` owns orders and knows nothing about
-seniority. `idle` owns cash and knows nothing at all. `assessor` owns valuation and
-allocation and holds no money. `coordinator` orchestrates and neither values nor
+The **four-actor split** is the point. `Tranche` owns orders and knows nothing about
+seniority. `Idle` owns cash and knows nothing at all. `Assessor` owns valuation and
+allocation and holds no money. `EpochCoordinator` orchestrates and neither values nor
 holds. Valuation that cannot move money is why a bug here is a mispricing rather
 than a theft.
 
@@ -69,15 +69,15 @@ Everything else is calibration and is meant to be replaced:
 
 | Extension point | Where | Default |
 |---|---|---|
-| Valuation | `NavLike` | `test/mock/navfeed.sol`, a number somebody sets |
+| Valuation | `INavLike` | `test/mocks/SimpleNAVFeed.sol`, a number somebody sets |
 | Fill policy | `EpochCoordinator.scoreSolution`, `virtual` | redemptions before subscriptions, senior before junior |
-| Risk band | `assessor.file` | set at deploy |
-| Permissioning | `MemberlistLike` on the operator | none, permissionless |
-| Tranche count | `assessor.trancher` | two |
+| Risk band | `Assessor.file` | set at deploy |
+| Permissioning | `IMemberlistLike` on the operator | none, permissionless |
+| Tranche count | `Assessor.trancher` | two |
 
 ## Two things this deliberately does not do
 
-**It does not value anything.** `NavLike` is a seam with a one-line mock behind it.
+**It does not value anything.** `INavLike` is a seam with a one-line mock behind it.
 Every tranched pool that has failed, on-chain or off, failed at valuation rather than
 at distribution. The guarantees here are conditional on a correct NAV and the code
 has no way to tell you the NAV is wrong.
@@ -95,7 +95,7 @@ the first is implemented. The second is not implemented.
 functions, illegal under solc 0.8.
 - **Seams live in one file.** Tinlake declares `*Like` inline per file, so `IdleLike`
 existed three times with three different member sets and nothing forced them to agree.
-- **Senior state and ratio maths live in `sacred.sol`.** Tinlake carries a copy of
+- **Senior state and ratio maths live in `Sacred.sol`.** Tinlake carries a copy of
 `calcSeniorAssetValue` in both `assessor` and `coordinator`, kept in step by hand.
 - **The off-chain solver is `virtual`, not transcribed.** The state machine and the
 constraint checks are exact. The weights that rank a submission are a policy choice,
@@ -116,7 +116,7 @@ which agrees with the execution path only while no epoch is ever skipped.
 | Keeper (anyone) | Close an epoch once its minimum time has passed, submit solutions during the submission period, execute the epoch |
 | Deployer | Admin on every contract until `denyDeployer` is called, which it should be |
 
-Every privileged edge in the pool is one of the eight `rely` calls in [`script/deployer.sol`](script/deployer.sol), written out one by one rather than granted in a loop.
+Every privileged edge in the pool is one of the eight `rely` calls in [`script/LenderDeployer.s.sol`](script/LenderDeployer.s.sol), written out one by one rather than granted in a loop.
 
 ## Build and test
 
@@ -129,9 +129,9 @@ forge test
 
 | Suite | Covers |
 |---|---|
-| `test/lender/sacred.t.sol` | The `ICascade` invariants fuzzed against the arithmetic alone: ratios conserve, junior absorbs first, senior never exceeds assets |
-| `test/lender/submission.t.sol` | The submission period: the best submission wins, base constraints are absolute, no submission outside the period |
-| `test/lender/system.t.sol` | Complete epochs: full lifecycle, redeem round trip, senior first fills, junior first losses, pool closure when junior is wiped out, empty epochs, auth gating |
+| `test/unit/Sacred.t.sol` | The `ICascade` invariants fuzzed against the arithmetic alone: ratios conserve, junior absorbs first, senior never exceeds assets |
+| `test/scenario/SubmissionPeriod.t.sol` | The submission period: the best submission wins, base constraints are absolute, no submission outside the period |
+| `test/scenario/System.t.sol` | Complete epochs: full lifecycle, redeem round trip, senior first fills, junior first losses, pool closure when junior is wiped out, empty epochs, auth gating |
 
 ## Status
 

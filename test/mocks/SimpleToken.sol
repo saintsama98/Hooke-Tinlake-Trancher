@@ -5,7 +5,7 @@ pragma solidity 0.8.28;
 ///         underlying currency and as the two tranche tokens.
 /// @dev    Deliberately not an OpenZeppelin ERC20: the lender needs `mint` and `burn`
 ///         callable by the tranche, and a test double makes the required surface
-///         explicit. `src/lender/interfaces.sol :: ERC20Like` is that surface. Any
+///         explicit. `src/lender/Interfaces.sol :: IERC20Like` is that surface. Any
 ///         token satisfying it works; this is the smallest one that does.
 contract SimpleToken {
     string public name;

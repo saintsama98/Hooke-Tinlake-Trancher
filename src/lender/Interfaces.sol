@@ -2,7 +2,7 @@
 // Collects the interface declarations of Centrifuge Tinlake src/lender/*.sol into one file. See NOTICE.
 pragma solidity 0.8.28;
 
-import "../fixed_point.sol";
+import "../FixedPoint.sol";
 
 /// @title Hooke lender seams
 /// @author adiii.eth
@@ -27,7 +27,7 @@ import "../fixed_point.sol";
 /// @notice The underlying asset and the tranche tokens both sit behind this.
 /// @dev mint and burn are used on tranche tokens only. The underlying asset needs
 /// neither and may revert on both.
-interface ERC20Like {
+interface IERC20Like {
     function balanceOf(address) external view returns (uint256);
     function totalSupply() external view returns (uint256);
     function transfer(address to, uint256 amount) external returns (bool);
@@ -40,7 +40,7 @@ interface ERC20Like {
 /// @notice The reserve, meaning currency at rest between epochs. Implemented by idle.
 /// @dev Named idle rather than reserve because that is what the balance is: supplied
 /// capital that is not currently deployed against the borrower side.
-interface IdleLike {
+interface IIdleLike {
     function totalBalance() external view returns (uint256);
     function deposit(uint256 currencyAmount) external;
     function payout(uint256 currencyAmount) external;
@@ -53,18 +53,18 @@ interface IdleLike {
 /// assets are actually worth is a separate problem and is not solved here. A
 /// discounted cash flow feed over a loan book, an oracle, or a single number set by
 /// governance in a test deployment all satisfy this seam. The smallest working example
-/// is test/mock/navfeed.sol.
+/// is test/mocks/SimpleNAVFeed.sol.
 /// @dev currentNAV must not change state. calcUpdateNAV may, so a feed can write down
 /// an accrual at epoch close. A feed with nothing to settle can implement the second
 /// as a call to the first.
-interface NavLike {
+interface INavLike {
     function currentNAV() external view returns (uint256);
     function calcUpdateNAV() external returns (uint256);
 }
 
 /// @notice What the coordinator needs from a tranche. Nothing about orders and nothing
 /// about users, because the coordinator moves aggregates and never touches a position.
-interface EpochTrancheLike {
+interface IEpochTrancheLike {
     function closeEpoch() external returns (uint256 totalSupplyCurrency, uint256 totalRedeemToken);
     function epochUpdate(
         uint256 epochID,
@@ -80,13 +80,13 @@ interface EpochTrancheLike {
 /// cycle currently stands.
 /// @dev The tranche never asks the coordinator to do anything. That one way dependency
 /// is why the two can be replaced separately.
-interface EpochPlacementLike {
+interface IEpochPlacementLike {
     function currentEpoch() external view returns (uint256);
     function lastEpochExecuted() external view returns (uint256);
 }
 
 /// @notice What the assessor needs from a tranche in order to price it.
-interface TrancheLike {
+interface ITrancheLike {
     function tokenSupply() external view returns (uint256);
 }
 
@@ -94,7 +94,7 @@ interface TrancheLike {
 /// @dev Every member here is read only from the coordinator side except
 /// changeSeniorAsset, which is the single write the coordinator may make into
 /// valuation, and only at the end of a successful epoch.
-interface AssessorLike {
+interface IAssessorLike {
     function calcUpdateNAV() external returns (uint256);
     function calcSeniorTokenPrice(uint256 nav_, uint256 reserve_) external view returns (Fixed27 memory);
     function calcJuniorTokenPrice(uint256 nav_, uint256 reserve_) external view returns (Fixed27 memory);
@@ -106,7 +106,7 @@ interface AssessorLike {
 }
 
 /// @notice What the operator needs from a tranche in order to serve a user.
-interface OperatorTrancheLike {
+interface IOperatorTrancheLike {
     function supplyOrder(address usr, uint256 newSupplyAmount) external;
     function redeemOrder(address usr, uint256 newRedeemAmount) external;
     function deservedRelease(address usr, uint256 endEpoch)
@@ -123,6 +123,6 @@ interface OperatorTrancheLike {
 /// regulated real world asset pools where the issuer must know every holder. That is a
 /// property of those pools rather than of tranching, so here it is optional. An
 /// operator with a zero memberlist address is permissionless, and that is the default.
-interface MemberlistLike {
+interface IMemberlistLike {
     function hasMember(address usr) external view returns (bool);
 }

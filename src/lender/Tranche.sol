@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/tranche.sol. See NOTICE.
+// Modified from Centrifuge Tinlake src/lender/Tranche.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
-import "../math/math.sol";
-import "../fixed_point.sol";
-import "../auth/auth.sol";
-import "./interfaces.sol";
+import "../math/Math.sol";
+import "../FixedPoint.sol";
+import "../auth/Auth.sol";
+import "./Interfaces.sol";
 
 /// @title Tranche
 /// @author adiii.eth
@@ -61,10 +61,10 @@ contract Tranche is Math, Auth {
 
     mapping(address => UserOrder) public users;
 
-    ERC20Like public currency;
-    ERC20Like public token;
-    IdleLike public reserve;
-    EpochPlacementLike public epochPlacement;
+    IERC20Like public currency;
+    IERC20Like public token;
+    IIdleLike public reserve;
+    IEpochPlacementLike public epochPlacement;
 
     address self;
 
@@ -102,20 +102,20 @@ contract Tranche is Math, Auth {
     /// @param currency_ Address of the underlying asset.
     /// @param token_ Address of the tranche token.
     constructor(address currency_, address token_) {
-        token = ERC20Like(token_);
-        currency = ERC20Like(currency_);
+        token = IERC20Like(token_);
+        currency = IERC20Like(currency_);
         self = address(this);
     }
 
     function depend(bytes32 contractName, address addr) public auth {
         if (contractName == "token") {
-            token = ERC20Like(addr);
+            token = IERC20Like(addr);
         } else if (contractName == "currency") {
-            currency = ERC20Like(addr);
+            currency = IERC20Like(addr);
         } else if (contractName == "reserve") {
-            reserve = IdleLike(addr);
+            reserve = IIdleLike(addr);
         } else if (contractName == "epochPlacement") {
-            epochPlacement = EpochPlacementLike(addr);
+            epochPlacement = IEpochPlacementLike(addr);
         } else {
             revert UnknownParameter();
         }
@@ -401,7 +401,7 @@ contract Tranche is Math, Auth {
     /// gathers rounding dust across the fulfilment shares, and reverting on a shortfall
     /// of one wei would block the pool for every user at once. The reserve does not
     /// clamp, so a real shortfall still shows up and only dust is absorbed here.
-    function _safeTransfer(ERC20Like erc20, address usr, uint256 amount) internal {
+    function _safeTransfer(IERC20Like erc20, address usr, uint256 amount) internal {
         uint256 max = erc20.balanceOf(self);
         if (amount > max) {
             amount = max;
