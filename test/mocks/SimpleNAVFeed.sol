@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.28;
 
-/// @notice The simplest conforming `NavLike`: a single number somebody sets.
+/// @notice The simplest conforming `INavLike`: a single number somebody sets.
 ///
 /// @dev    THIS IS THE SEAM WHERE REAL VALUATION GOES, and it is worth being blunt
 ///         about how much this mock is hiding. Tinlake's real feed prices a book of

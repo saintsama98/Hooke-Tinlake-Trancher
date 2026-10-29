@@ -15,17 +15,17 @@ This program is a modified version of work from the following projects, each lic
 
 Files modified from upstream, and the file each one comes from:
 
-  src/auth/auth.sol          tinlake-auth src/auth.sol
-  src/math/math.sol          tinlake-math src/math.sol, tinlake src/borrower/feed/discounting.sol
-  src/math/interest.sol      tinlake-math src/interest.sol
-  src/fixed_point.sol        tinlake src/fixed_point.sol
-  src/lender/assessor.sol    tinlake src/lender/assessor.sol
-  src/lender/coordinator.sol tinlake src/lender/coordinator.sol
-  src/lender/idle.sol        tinlake src/lender/reserve.sol
-  src/lender/operator.sol    tinlake src/lender/operator.sol
-  src/lender/sacred.sol      tinlake src/lender/definitions.sol, src/lender/coordinator.sol
-  src/lender/tranche.sol     tinlake src/lender/tranche.sol
-  src/lender/interfaces.sol  interface declarations from tinlake src/lender/*.sol
+  src/auth/Auth.sol                tinlake-auth src/auth.sol
+  src/math/Math.sol                tinlake-math src/math.sol, tinlake src/borrower/feed/discounting.sol
+  src/math/Interest.sol            tinlake-math src/interest.sol
+  src/FixedPoint.sol               tinlake src/fixed_point.sol
+  src/lender/Assessor.sol          tinlake src/lender/assessor.sol
+  src/lender/EpochCoordinator.sol  tinlake src/lender/coordinator.sol
+  src/lender/Idle.sol              tinlake src/lender/reserve.sol
+  src/lender/Operator.sol          tinlake src/lender/operator.sol
+  src/lender/Sacred.sol            tinlake src/lender/definitions.sol, src/lender/coordinator.sol
+  src/lender/Tranche.sol           tinlake src/lender/tranche.sol
+  src/lender/Interfaces.sol        interface declarations from tinlake src/lender/*.sol
 
 The changes are ports to solidity 0.8, restructuring of the interfaces and senior arithmetic, and the deviations listed
 in README.md under "Deviations from Tinlake, and why". The remaining files (src/lender/ICascade.sol, script/, test/)

@@ -2,9 +2,9 @@
 // Modified from Centrifuge Tinlake src/lender/reserve.sol. See NOTICE.
 pragma solidity 0.8.28;
 
-import "../math/math.sol";
-import "../auth/auth.sol";
-import "./interfaces.sol";
+import "../math/Math.sol";
+import "../auth/Auth.sol";
+import "./Interfaces.sol";
 
 /// @title idle
 /// @author adiii.eth
@@ -26,8 +26,8 @@ import "./interfaces.sol";
 /// net asset value, and be paid out to whoever redeems first. The accounting balance
 /// and the token balance are allowed to differ, and only the accounting balance is
 /// ever distributed.
-contract idle is Math, Auth {
-    ERC20Like public currency;
+contract Idle is Math, Auth {
+    IERC20Like public currency;
 
     /// @notice Total currency held by the pool, by its own accounting.
     uint256 public balance_;
@@ -48,7 +48,7 @@ contract idle is Math, Auth {
     error UnknownParameter();
 
     constructor(address currency_) {
-        currency = ERC20Like(currency_);
+        currency = IERC20Like(currency_);
     }
 
     function file(bytes32 what, uint256 amount) public auth {
@@ -62,7 +62,7 @@ contract idle is Math, Auth {
 
     function depend(bytes32 contractName, address addr) public auth {
         if (contractName == "currency") {
-            currency = ERC20Like(addr);
+            currency = IERC20Like(addr);
         } else {
             revert UnknownParameter();
         }

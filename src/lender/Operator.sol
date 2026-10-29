@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/operator.sol. See NOTICE.
+// Modified from Centrifuge Tinlake src/lender/Operator.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
-import "../auth/auth.sol";
-import "./interfaces.sol";
+import "../auth/Auth.sol";
+import "./Interfaces.sol";
 
 /// @title Operator
 /// @author adiii.eth
@@ -25,26 +25,26 @@ import "./interfaces.sol";
 /// order in one transaction. That is left out here. It is a convenience over the same
 /// two calls and adds a signature surface that has nothing to say about tranching.
 contract Operator is Auth {
-    OperatorTrancheLike public tranche;
+    IOperatorTrancheLike public tranche;
 
     /// @notice Optional. When the address is zero the pool is permissionless, which
     /// is the default.
-    /// @dev See MemberlistLike in interfaces.sol for why this is optional rather than
+    /// @dev See IMemberlistLike in interfaces.sol for why this is optional rather than
     /// assumed.
-    MemberlistLike public memberlist;
+    IMemberlistLike public memberlist;
 
     error NotAMember();
     error UnknownParameter();
 
     constructor(address tranche_) {
-        tranche = OperatorTrancheLike(tranche_);
+        tranche = IOperatorTrancheLike(tranche_);
     }
 
     function depend(bytes32 contractName, address addr) public auth {
         if (contractName == "tranche") {
-            tranche = OperatorTrancheLike(addr);
+            tranche = IOperatorTrancheLike(addr);
         } else if (contractName == "memberlist") {
-            memberlist = MemberlistLike(addr);
+            memberlist = IMemberlistLike(addr);
         } else {
             revert UnknownParameter();
         }

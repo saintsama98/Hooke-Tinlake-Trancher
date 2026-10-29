@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.28;
 
-import "../src/lender/idle.sol";
-import "../src/lender/tranche.sol";
-import "../src/lender/assessor.sol";
-import "../src/lender/coordinator.sol";
-import "../src/lender/operator.sol";
+import "../src/lender/Idle.sol";
+import "../src/lender/Tranche.sol";
+import "../src/lender/Assessor.sol";
+import "../src/lender/EpochCoordinator.sol";
+import "../src/lender/Operator.sol";
 
 /// @title LenderDeployer
 /// @author adiii.eth
@@ -33,8 +33,8 @@ contract LenderDeployer {
     address public immutable juniorToken;
 
     // pool
-    idle public reserve;
-    assessor public assessor_;
+    Idle public reserve;
+    Assessor public assessor_;
     EpochCoordinator public coordinator;
     Tranche public seniorTranche;
     Tranche public juniorTranche;
@@ -47,7 +47,7 @@ contract LenderDeployer {
         juniorToken = juniorToken_;
     }
 
-    /// @param navFeed Address of a valuation feed. See test/mock/navfeed.sol.
+    /// @param navFeed Address of a valuation feed. See test/mocks/SimpleNAVFeed.sol.
     /// @param challengeTime Seconds a submission period stays open after its first
     /// valid proposal. Zero removes the challenge window, which is acceptable in a test
     /// and wrong in a live pool.
@@ -64,8 +64,8 @@ contract LenderDeployer {
         uint256 maxReserve_,
         uint256 seniorRate_
     ) public {
-        reserve = new idle(currency);
-        assessor_ = new assessor();
+        reserve = new Idle(currency);
+        assessor_ = new Assessor();
         coordinator = new EpochCoordinator(challengeTime);
         seniorTranche = new Tranche(currency, seniorToken);
         juniorTranche = new Tranche(currency, juniorToken);

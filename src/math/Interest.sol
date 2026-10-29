@@ -3,7 +3,7 @@
 // Modified from Centrifuge tinlake-math src/interest.sol: ported to solidity 0.8.
 pragma solidity 0.8.28;
 
-import "./math.sol";
+import "./Math.sol";
 
 contract Interest is Math {
     // @notice This function provides compounding in seconds
