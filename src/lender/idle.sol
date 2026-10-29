@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
+// Modified from Centrifuge Tinlake src/lender/reserve.sol. See NOTICE.
 pragma solidity 0.8.28;
 
 import "../math/math.sol";

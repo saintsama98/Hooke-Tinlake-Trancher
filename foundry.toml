@@ -1,7 +1,6 @@
-# Foundry config. Keeps Centrifuge Tinlake's tiered fuzz-profile convention, but
-# on modern solc 0.8.x with permissive (MIT) dependencies only — suitable for a
-# public reference implementation. Deps: forge-std + OpenZeppelin (both MIT).
-# Auth and RAY math are vendored in-repo under MIT (src/auth, src/math).
+# Foundry config. Keeps Centrifuge Tinlake's tiered fuzz-profile convention on solc 0.8.x.
+# Dependencies: forge-std and OpenZeppelin (both MIT). Auth and RAY math are adapted in-repo from
+# tinlake-auth and tinlake-math (AGPL-3.0-only); see NOTICE.
 
 [profile.default]
 src = "src"

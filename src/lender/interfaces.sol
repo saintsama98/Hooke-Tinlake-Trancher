@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
+// Collects the interface declarations of Centrifuge Tinlake src/lender/*.sol into one file. See NOTICE.
 pragma solidity 0.8.28;
 
 import "../fixed_point.sol";

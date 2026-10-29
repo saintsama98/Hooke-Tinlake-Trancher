@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
+// Modified from Centrifuge Tinlake src/fixed_point.sol. See NOTICE.
 pragma solidity 0.8.28;
 
 /// @notice A ratio, rate, price or fulfilment percentage held in 27 decimal fixed
