@@ -1,4 +1,6 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2018 Rain <rainbreak@riseup.net> and Centrifuge, referencing MakerDAO dss => https://github.com/makerdao/dss/blob/master/src/pot.sol
+// Modified from Centrifuge tinlake-math src/interest.sol: ported to solidity 0.8.
 pragma solidity 0.8.28;
 
 import "./math.sol";

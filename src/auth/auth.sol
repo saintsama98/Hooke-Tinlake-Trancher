@@ -1,4 +1,6 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) Centrifuge 2020, based on MakerDAO dss https://github.com/makerdao/dss
+// Modified from Centrifuge tinlake-auth src/auth.sol: ported to solidity 0.8 with NatSpec.
 pragma solidity 0.8.28;
 
 /// @title Auth

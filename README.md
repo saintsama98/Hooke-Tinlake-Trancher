@@ -139,4 +139,6 @@ Written for study, and under development. It is not audited and it has never hel
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+AGPL-3.0-only. See [`LICENSE`](LICENSE).
+
+Hooke is a modified version of [Centrifuge Tinlake](https://github.com/centrifuge/tinlake), [tinlake-math](https://github.com/centrifuge/tinlake-math) and [tinlake-auth](https://github.com/centrifuge/tinlake-auth), all AGPL-3.0-only. [`NOTICE`](NOTICE) lists every file adapted from them and keeps the upstream copyright lines.
