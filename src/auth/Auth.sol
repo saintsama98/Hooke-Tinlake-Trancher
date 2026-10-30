@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: ward-based authorization mixin.
+// @author adiii.eth
 // Copyright (C) Centrifuge 2020, based on MakerDAO dss https://github.com/makerdao/dss
-// Modified from Centrifuge tinlake-auth src/auth.sol: ported to solidity 0.8 with NatSpec.
+// Adapted from Centrifuge tinlake-auth src/auth.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 /// @title Auth
@@ -21,7 +24,7 @@ abstract contract Auth {
 
     /// @notice Restricts a function to authorised addresses.
     modifier auth() {
-        if (wards[msg.sender] != 1) revert NotAuthorized();
+        require(wards[msg.sender] == 1, NotAuthorized());
         _;
     }
 

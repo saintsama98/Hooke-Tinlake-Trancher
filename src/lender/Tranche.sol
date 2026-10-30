@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/Tranche.sol. See NOTICE.
+// Hooke: user orders and escrow for one seniority class.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/tranche.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
@@ -151,7 +153,7 @@ contract Tranche is Math, Auth {
 
         if (newSupplyAmount > currentSupplyAmount) {
             uint256 delta = safeSub(newSupplyAmount, currentSupplyAmount);
-            if (!currency.transferFrom(usr, self, delta)) revert TransferFailed();
+            require(currency.transferFrom(usr, self, delta), TransferFailed());
             return;
         }
         uint256 refund = safeSub(currentSupplyAmount, newSupplyAmount);
@@ -174,7 +176,7 @@ contract Tranche is Math, Auth {
 
         if (newRedeemAmount > currentRedeemAmount) {
             uint256 delta = safeSub(newRedeemAmount, currentRedeemAmount);
-            if (!token.transferFrom(usr, self, delta)) revert TransferFailed();
+            require(token.transferFrom(usr, self, delta), TransferFailed());
             return;
         }
         uint256 refund = safeSub(currentRedeemAmount, newRedeemAmount);
@@ -190,7 +192,7 @@ contract Tranche is Math, Auth {
     /// @return totalSupplyCurrency_ Total open supply orders, in currency.
     /// @return totalRedeemToken_ Total open redeem orders, in tranche tokens.
     function closeEpoch() public auth returns (uint256 totalSupplyCurrency_, uint256 totalRedeemToken_) {
-        if (waitingForUpdate) revert AlreadyClosed();
+        require(!waitingForUpdate, AlreadyClosed());
         waitingForUpdate = true;
         return (totalSupply, totalRedeem);
     }
@@ -212,7 +214,7 @@ contract Tranche is Math, Auth {
         uint256 epochSupplyOrderCurrency,
         uint256 epochRedeemOrderCurrency
     ) public auth {
-        if (!waitingForUpdate) revert NotWaitingForUpdate();
+        require(waitingForUpdate, NotWaitingForUpdate());
         waitingForUpdate = false;
 
         epochs[epochID].supplyFulfillment.value = supplyFulfillment_;
@@ -406,7 +408,7 @@ contract Tranche is Math, Auth {
         if (amount > max) {
             amount = max;
         }
-        if (!erc20.transfer(usr, amount)) revert TransferFailed();
+        require(erc20.transfer(usr, amount), TransferFailed());
     }
 
     function safeBurn(uint256 tokenAmount) internal {

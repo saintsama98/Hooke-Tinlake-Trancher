@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/reserve.sol. See NOTICE.
+// Hooke: the reserve: currency at rest between epochs.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/reserve.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 import "../math/Math.sol";
@@ -77,7 +80,7 @@ contract Idle is Math, Auth {
     /// @dev The caller must have approved this contract first. Tranches do that in
     /// adjustCurrencyBalance immediately before calling.
     function deposit(uint256 currencyAmount) public auth {
-        if (!currency.transferFrom(msg.sender, address(this), currencyAmount)) revert TransferFailed();
+        require(currency.transferFrom(msg.sender, address(this), currencyAmount), TransferFailed());
         balance_ = safeAdd(balance_, currencyAmount);
         emit Deposit(msg.sender, currencyAmount);
     }
@@ -89,9 +92,9 @@ contract Idle is Math, Auth {
     /// did not settle. A caller that wants the clamped behaviour clamps to
     /// totalBalance first, which is what tranche.safePayout does.
     function payout(uint256 currencyAmount) public auth {
-        if (currencyAmount > balance_) revert NotEnoughCurrency();
+        require(currencyAmount <= balance_, NotEnoughCurrency());
         balance_ = safeSub(balance_, currencyAmount);
-        if (!currency.transfer(msg.sender, currencyAmount)) revert TransferFailed();
+        require(currency.transfer(msg.sender, currencyAmount), TransferFailed());
         emit Payout(msg.sender, currencyAmount);
     }
 }

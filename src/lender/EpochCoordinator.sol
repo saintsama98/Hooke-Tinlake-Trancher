@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/EpochCoordinator.sol. See NOTICE.
+// Hooke: opens, solves and executes epochs; holds no cash and values nothing.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/coordinator.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 import "../math/Math.sol";
@@ -130,7 +133,7 @@ contract EpochCoordinator is Auth, Math, Sacred {
     error UnknownParameter();
 
     modifier minimumEpochTimePassed() {
-        if (safeSub(block.timestamp, lastEpochClosed) < minimumEpochPeriod) revert MinimumEpochTimeNotPassed();
+        require(safeSub(block.timestamp, lastEpochClosed) >= minimumEpochPeriod, MinimumEpochTimeNotPassed());
         _;
     }
 
@@ -177,7 +180,7 @@ contract EpochCoordinator is Auth, Math, Sacred {
     /// a constraint the epoch also executes here, otherwise the submission period
     /// starts.
     function closeEpoch() external minimumEpochTimePassed {
-        if (submissionPeriod) revert SubmissionPeriodActive();
+        require(!submissionPeriod, SubmissionPeriodActive());
         lastEpochClosed = block.timestamp;
         currentEpoch = currentEpoch + 1;
 
@@ -341,7 +344,7 @@ contract EpochCoordinator is Auth, Math, Sacred {
         public
         returns (int256)
     {
-        if (!submissionPeriod) revert SubmissionPeriodNotActive();
+        require(submissionPeriod, SubmissionPeriodNotActive());
 
         int256 valid = _submitSolution(seniorRedeem, juniorRedeem, juniorSupply, seniorSupply);
 
@@ -519,7 +522,7 @@ contract EpochCoordinator is Auth, Math, Sacred {
 
     /// @notice Settles the best allocation once the challenge period has ended.
     function executeEpoch() public {
-        if (block.timestamp < minChallengePeriodEnd || minChallengePeriodEnd == 0) revert ChallengePeriodNotEnded();
+        require(block.timestamp >= minChallengePeriodEnd && minChallengePeriodEnd != 0, ChallengePeriodNotEnded());
         _executeEpoch(
             bestSubmission.seniorRedeem,
             bestSubmission.juniorRedeem,
