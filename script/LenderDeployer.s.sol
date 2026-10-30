@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: deploys and wires a two-tranche pool.
+// @author adiii.eth
+
 pragma solidity 0.8.28;
 
 import "../src/lender/Idle.sol";

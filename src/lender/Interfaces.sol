@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Collects the interface declarations of Centrifuge Tinlake src/lender/*.sol into one file. See NOTICE.
+// Hooke: every call one pool contract makes into another.
+// @author adiii.eth
+// Collects the interface declarations of Centrifuge Tinlake src/lender/*.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 import "../FixedPoint.sol";

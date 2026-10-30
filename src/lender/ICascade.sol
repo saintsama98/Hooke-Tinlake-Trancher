@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: the waterfall interface and its invariants I1 to I4.
+// @author adiii.eth
 
 pragma solidity 0.8.28;
 
 ///@title ICascade
-///@author adiii.eth (https://adiii.eth.limo)
+/// @author adiii.eth
 ///@notice A cascade is the deterministic engine at the heart of any tranched
 /// structure: it routes incoming cash flow across an ordered set of tranches in
 /// strictly decreasing order of seniority, and allocates realised loss across the

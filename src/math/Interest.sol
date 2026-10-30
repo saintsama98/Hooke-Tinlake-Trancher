@@ -1,11 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2018 Rain <rainbreak@riseup.net> and Centrifuge, referencing MakerDAO dss => https://github.com/makerdao/dss/blob/master/src/pot.sol
-// Modified from Centrifuge tinlake-math src/interest.sol: ported to solidity 0.8.
+// Hooke: compounding interest helpers.
+// @author adiii.eth
+// Copyright (C) 2018 Rain <rainbreak@riseup.net> and Centrifuge, referencing MakerDAO dss https://github.com/makerdao/dss/blob/master/src/pot.sol
+// Adapted from Centrifuge tinlake-math src/interest.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 import "./Math.sol";
 
 contract Interest is Math {
+    error InvalidTimestamp();
+    error ZeroRate();
+
     // @notice This function provides compounding in seconds
     // @param chi Accumulated interest rate over time
     // @param ratePerSecond Interest rate accumulation per second in RAD(10ˆ27)
@@ -17,8 +23,8 @@ contract Interest is Math {
         view
         returns (uint256, uint256)
     {
-        require(block.timestamp >= lastUpdated, "tinlake-math/invalid-timestamp");
-        require(chi != 0);
+        require(block.timestamp >= lastUpdated, InvalidTimestamp());
+        require(chi != 0, ZeroRate());
         // instead of a interestBearingAmount we use a accumulated interest rate index (chi)
         uint256 updatedChi = _chargeInterest(chi, ratePerSecond, lastUpdated, block.timestamp);
         return (updatedChi, safeSub(rmul(updatedChi, pie), rmul(chi, pie)));

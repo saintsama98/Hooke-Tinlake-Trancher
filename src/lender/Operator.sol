@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/Operator.sol. See NOTICE.
+// Hooke: the only caller allowed to place orders on its tranche.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/operator.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
@@ -53,7 +55,7 @@ contract Operator is Auth {
     /// @dev Passes when no memberlist is configured. That is the intended default. A
     /// tranching framework should permit an allowlist rather than require one.
     modifier permitted(address usr) {
-        if (address(memberlist) != address(0) && !memberlist.hasMember(usr)) revert NotAMember();
+        require(address(memberlist) == address(0) || memberlist.hasMember(usr), NotAMember());
         _;
     }
 

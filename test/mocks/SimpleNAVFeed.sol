@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: a settable NAV feed for tests.
+// @author adiii.eth
+
 pragma solidity 0.8.28;
 
 /// @notice The simplest conforming `INavLike`: a single number somebody sets.

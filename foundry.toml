@@ -1,5 +1,4 @@
-# Foundry config. Keeps Centrifuge Tinlake's tiered fuzz-profile convention on solc 0.8.x.
-# Dependencies: forge-std and OpenZeppelin (both MIT). Auth and RAY math are adapted in-repo from
+# Dependency: forge-std (MIT), as a git submodule. Auth and RAY math are adapted in this repository from
 # tinlake-auth and tinlake-math (AGPL-3.0-only); see NOTICE.
 
 [profile.default]
@@ -12,7 +11,6 @@ optimizer_runs = 200
 verbosity = 3
 fs_permissions = [{ access = "read", path = "./out" }]
 remappings = [
-    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "forge-std/=lib/forge-std/src/",
 ]
 
@@ -28,4 +26,8 @@ runs = 1000
 runs = 50000
 max_test_rejects = 262144
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = false
+int_types = "long"

@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: RAY fixed-point and safe arithmetic helpers.
+// @author adiii.eth
 // Copyright (C) 2018 Rain <rainbreak@riseup.net>
-// Modified from Centrifuge tinlake-math src/math.sol and Tinlake discounting.sol: ported to solidity 0.8.
+// Adapted from Centrifuge tinlake-math src/math.sol and Centrifuge Tinlake src/borrower/feed/discounting.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
-/// @title  Math — RAY (1e27) fixed-point + safe arithmetic, MakerDAO "dss" style.
+/// @title  Math: RAY (1e27) fixed-point + safe arithmetic, MakerDAO "dss" style.
 /// @notice Ported to parity with Centrifuge `tinlake-math`. All ratios and rates
 ///         are RAY-scaled: `ONE` (1e27) represents 1.0 (= 100%).
 /// @dev    Solidity 0.8 already reverts on overflow / underflow / div-by-zero, so
-///         the `safe*` helpers are thin, name-compatible wrappers — they exist so
+///         the `safe*` helpers are thin, name-compatible wrappers; they exist so
 ///         logic ported from Tinlake's `definitions.sol` / `assessor.sol`
 ///         (which call `safeAdd`/`safeSub`/`safeMul`) resolves unchanged. In new
 ///         code you may use the native `+ - * /` directly with identical safety.
@@ -60,18 +63,18 @@ abstract contract Math {
 
     /// @notice Divide RAY `x` by RAY `y`, rounding to nearest (half up).
     function rdiv(uint256 x, uint256 y) internal pure returns (uint256 z) {
-        if (y == 0) revert DivideByZero();
+        require(y != 0, DivideByZero());
         z = safeAdd(safeMul(x, ONE), y / 2) / y;
     }
 
     /// @notice Divide RAY `x` by RAY `y`, rounding up.
     function rdivup(uint256 x, uint256 y) internal pure returns (uint256 z) {
-        if (y == 0) revert DivideByZero();
+        require(y != 0, DivideByZero());
         z = safeAdd(safeMul(x, ONE), safeSub(y, 1)) / y;
     }
 
     // --------------------------------------------------------------------------
-    // rpow — x^n in fixed-point with `base` (pass `ONE` for RAY).
+    // rpow: x^n in fixed-point with `base` (pass `ONE` for RAY).
     // Used for per-second interest compounding. Canonical MakerDAO dss rpow.
     // --------------------------------------------------------------------------
 

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/Assessor.sol. See NOTICE.
+// Hooke: valuation, ratios, token prices and the waterfall; holds no cash.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/assessor.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
@@ -68,7 +70,7 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     uint256 public constant TRANCHE_COUNT = 2;
 
     // tolerance for rounding dust in balances
-    uint256 public constant supplyTolerence = 5;
+    uint256 public constant SUPPLY_TOLERANCE = 5;
 
     event File(bytes32 indexed what, uint256 value);
     event SeniorAssetChanged(uint256 seniorRatio, uint256 seniorDebt, uint256 seniorBalance);

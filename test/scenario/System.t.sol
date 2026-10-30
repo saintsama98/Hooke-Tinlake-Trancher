@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: a pool driven through complete epochs.
+// @author adiii.eth
+
 pragma solidity 0.8.28;
 
 import "forge-std/Test.sol";

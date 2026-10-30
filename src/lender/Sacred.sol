@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Modified from Centrifuge Tinlake src/lender/definitions.sol and coordinator.sol. See NOTICE.
+// Hooke: senior state and ratio math shared by the assessor and the coordinator.
+// @author adiii.eth
+// Adapted from Centrifuge Tinlake src/lender/definitions.sol and src/lender/coordinator.sol. See NOTICE.
+
 pragma solidity 0.8.28;
 
 import "../math/Math.sol";

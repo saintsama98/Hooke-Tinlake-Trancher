@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// Hooke: minimal mintable ERC-20 for tests.
+// @author adiii.eth
+
 pragma solidity 0.8.28;
 
 /// @notice Minimal mintable/burnable ERC-20 for tests, used both as the pool's
