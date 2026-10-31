@@ -21,7 +21,7 @@ runs = 100
 [profile.pr.fuzz]
 runs = 1000
 
-# CI / push-to-main profile: exhaustive fuzzing.
+# ci profile, used on pushes to main: exhaustive fuzzing.
 [profile.ci.fuzz]
 runs = 50000
 max_test_rejects = 262144
