@@ -1,41 +1,44 @@
-name: CI
+name: ci
 
 on:
   push:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
   check:
-    name: build, fmt, test
+    name: build and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Install Foundry
+      - name: install foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          version: v1.7.1
 
-      - name: Show forge version
+      - name: versions
         run: forge --version
 
-      - name: Check formatting
+      - name: format check
         run: forge fmt --check
 
-      - name: Build
+      - name: build
         run: forge build
 
       # LenderDeployer is a deployment script and is deliberately exempt. It
       # embeds the creation bytecode of nine contracts, so it cannot fit under
       # EIP-170 and is never itself deployed on chain. Everything in src/ must
       # fit, and this step fails if anything else exceeds the limit.
-      - name: Contract sizes
+      - name: contract sizes
         run: |
           forge build --sizes > sizes.txt || true
           cat sizes.txt
@@ -54,7 +57,7 @@ jobs:
 
       # The pull-request profile runs 1000 fuzz runs; the ci profile used on
       # pushes to main runs 50000. Both are declared in foundry.toml.
-      - name: Test
+      - name: test (unit, fuzz, stateful invariants)
         run: forge test -vvv
         env:
           FOUNDRY_PROFILE: ${{ github.event_name == 'pull_request' && 'pr' || 'ci' }}
