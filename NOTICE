@@ -13,7 +13,7 @@ This program is a modified version of work from the following projects, each lic
   Centrifuge tinlake-auth    https://github.com/centrifuge/tinlake-auth
                              Copyright (C) Centrifuge 2020, based on MakerDAO dss
 
-Files modified from upstream, and the file each one comes from:
+Files modified from upstream in 2026, and the file each one comes from:
 
   src/auth/Auth.sol                tinlake-auth src/auth.sol
   src/math/Math.sol                tinlake-math src/math.sol, tinlake src/borrower/feed/discounting.sol
