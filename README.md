@@ -1,6 +1,6 @@
 # Hooke-Tinlake-Trancher
 
-A two tranche lending pool rebuilt from Centrifuge's Tinlake, with the waterfall rules written down and tested.
+A two-tranche lending pool adapted from Centrifuge's Tinlake, with the waterfall rules written down and tested.
 
 > This project was developed privately and published once it had been tested against its original design. Its full development history is published on a single `main` branch so reviewers can follow it in one place.
 
