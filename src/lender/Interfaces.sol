@@ -2,7 +2,6 @@
 // Hooke: every call one pool contract makes into another.
 // @author adiii.eth
 // Adapted from Centrifuge Tinlake src/lender/*.sol. See NOTICE.
-// Collects the interface declarations of Centrifuge Tinlake src/lender/*.sol. See NOTICE.
 
 pragma solidity 0.8.28;
 
