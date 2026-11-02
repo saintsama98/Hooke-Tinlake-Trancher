@@ -132,4 +132,4 @@ Research build. Not audited. Not deployed.
 
 ## License
 
-AGPL-3.0-only. See [`LICENSE`](LICENSE). Hooke is a modified version of the three Centrifuge projects listed above, all AGPL-3.0-only.
+AGPL-3.0-only. See [`LICENSE`](LICENSE). Hooke is a modified version of the three Centrifuge projects listed above, all AGPL-3.0-only. Section 13 of the license applies to deployments: users who interact with a modified version over a network must be offered its source.
