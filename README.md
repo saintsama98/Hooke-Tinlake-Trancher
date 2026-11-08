@@ -113,6 +113,9 @@ forge test
 | `test/scenario/SubmissionPeriod.t.sol` | The submission period: the best submission wins, base constraints are absolute, no submission outside the period |
 | `test/scenario/System.t.sol` | Complete epochs: full lifecycle, redeem round trip, senior first fills, junior first losses, pool closure when junior is wiped out, empty epochs, auth gating |
 | `test/unit/Interest.t.sol` | The compounding guards: future timestamps and a zero rate revert with custom errors, a unit rate charges nothing |
+| `test/unit/Assessor.t.sol` | The assessor alone: senior interest starts when debt is booked or the rate changes, sub-wei accrual is kept, the waterfall conserves and fills senior first, prices split assets by claim and floor junior at zero, admin calls are gated |
+| `test/unit/Auth.t.sol` | Ward authorization: rely and deny with their events, a revoked or unknown caller reverts |
+| `test/exploit/WipedPoolPricing.t.sol` | Regressions for a wiped pool selling tokens at par and for supply filled into a closing pool |
 | `test/invariant/PoolInvariants.t.sol` | Seven stateful invariants over a handler (`test/invariant/handlers/PoolHandler.sol`) that drives orders, epochs, NAV moves and losses: I1 to I3, cash conservation, the reserve ledger matching its balance, and tokens held only by lenders or escrow |
 
 Fuzz and invariant runs are set per profile in `foundry.toml`: the default profile for local runs, `pr` for pull requests and `ci` for pushes to `main`. `FOUNDRY_PROFILE=ci forge test` reproduces the deepest run.
