@@ -253,8 +253,9 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// @dev Capped at total assets, so the senior price cannot exceed what the pool
     /// holds. This is rule I2 expressed as a price.
     function calcSeniorTokenPrice(uint256 nav_, uint256 reserve_) public view returns (Fixed27 memory) {
-        if ((nav_ == 0 && reserve_ == 0) || seniorTranche.tokenSupply() == 0) {
-            // no pool or no holders yet, so the price starts at par
+        if (seniorTranche.tokenSupply() == 0) {
+            // no holders yet, so the price starts at par. A pool with holders and no assets prices at zero
+            // (upstream Tinlake priced it at par, which sold new tokens into a wiped pool).
             return Fixed27(ONE);
         }
         uint256 totalAssets = calcAssets(nav_, reserve_);
@@ -273,7 +274,7 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// is the signal the coordinator watches for. The junior tranche has absorbed
     /// everything it can, so the pool stops accepting new supply and starts closing.
     function calcJuniorTokenPrice(uint256 nav_, uint256 reserve_) public view returns (Fixed27 memory) {
-        if ((nav_ == 0 && reserve_ == 0) || juniorTranche.tokenSupply() == 0) {
+        if (juniorTranche.tokenSupply() == 0) {
             return Fixed27(ONE);
         }
         uint256 totalAssets = calcAssets(nav_, reserve_);
