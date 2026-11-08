@@ -83,6 +83,7 @@ Everything else is calibration and is meant to be replaced:
 - **Error codes renumbered to Tinlake's.** The previous `ERR_MAX_RESERVE = -2` collided with Tinlake's `ERR_MAX_ORDER`.
 - **Empty epochs key by `lastEpochExecuted + 1`.** Tinlake keys them by `currentEpoch`, which agrees with the execution path only while no epoch is ever skipped.
 - **A pool with holders and no assets prices its tokens at zero.** Tinlake priced both tranches at par whenever nav and reserve were both zero, so a wiped pool did not start closing and sold new junior tokens at par, which the old senior could then redeem. Par now applies only to a tranche with no tokens out.
+- **Senior interest keeps sub-wei accrual and never runs backwards.** Tinlake moves the senior interest clock on every drip, which drops accrual too small to book. Here the clock stays put while a nonzero debt at a nonzero rate has not yet grown, moves whenever there is nothing to accrue, and restarts when the senior debt is rewritten or the rate changes, so new debt or a new rate never accrues over the time before it.
 
 ## Roles
 
