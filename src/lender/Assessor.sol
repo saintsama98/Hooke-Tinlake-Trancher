@@ -87,6 +87,8 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     function file(bytes32 what, uint256 value) public auth {
         if (what == "seniorInterestRate") {
             dripSeniorDebt();
+            // the new rate applies from now; at most sub-wei accrual at the old rate is dropped
+            lastUpdateSeniorInterest = block.timestamp;
             seniorInterestRate.value = value;
         } else if (what == "maxReserve") {
             maxReserve = value;
@@ -185,12 +187,14 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// @notice Settles accrued senior interest into storage.
     /// @return The senior debt after settlement.
     /// @dev The guard compares the new debt against the stored debt rather than
-    /// comparing timestamps. Interest only rises, so anything that did not raise the
-    /// debt does nothing and has to leave the timestamp alone. Moving the timestamp
-    /// forward without booking the interest discards that period of accrual for good.
+    /// comparing timestamps. Interest only rises, so a drip that did not raise a
+    /// nonzero debt at a nonzero rate leaves the timestamp alone: moving it forward
+    /// without booking the interest would discard sub-wei accrual for good. With no
+    /// debt or a zero rate there is nothing to accrue, and the clock moves, so the next
+    /// debt booked or rate set does not accrue over the time before it.
     function dripSeniorDebt() public returns (uint256) {
         uint256 newSeniorDebt = seniorDebt();
-        if (newSeniorDebt > seniorDebt_) {
+        if (newSeniorDebt > seniorDebt_ || seniorDebt_ == 0 || seniorInterestRate.value == ONE) {
             seniorDebt_ = newSeniorDebt;
             lastUpdateSeniorInterest = block.timestamp;
         }
@@ -210,7 +214,10 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// remainder. If the entitled debt is larger than the whole senior asset then the
     /// pool has shrunk below the senior claim, so debt takes everything and the balance
     /// is zero.
+    /// Every caller drips first, so the new debt starts accruing now; at most sub-wei
+    /// accrual on the old debt is dropped.
     function reBalance(uint256 seniorAsset_, uint256 seniorRatio_) internal {
+        lastUpdateSeniorInterest = block.timestamp;
         uint256 nav_ = getNav();
         seniorDebt_ = rmul(nav_, seniorRatio_);
         if (seniorDebt_ > seniorAsset_) {
@@ -253,8 +260,9 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// @dev Capped at total assets, so the senior price cannot exceed what the pool
     /// holds. This is rule I2 expressed as a price.
     function calcSeniorTokenPrice(uint256 nav_, uint256 reserve_) public view returns (Fixed27 memory) {
-        if ((nav_ == 0 && reserve_ == 0) || seniorTranche.tokenSupply() == 0) {
-            // no pool or no holders yet, so the price starts at par
+        if (seniorTranche.tokenSupply() == 0) {
+            // no holders yet, so the price starts at par. A pool with holders and no assets prices at zero
+            // (upstream Tinlake priced it at par, which sold new tokens into a wiped pool).
             return Fixed27(ONE);
         }
         uint256 totalAssets = calcAssets(nav_, reserve_);
@@ -273,7 +281,7 @@ contract Assessor is Math, Sacred, Auth, Interest, ICascade {
     /// is the signal the coordinator watches for. The junior tranche has absorbed
     /// everything it can, so the pool stops accepting new supply and starts closing.
     function calcJuniorTokenPrice(uint256 nav_, uint256 reserve_) public view returns (Fixed27 memory) {
-        if ((nav_ == 0 && reserve_ == 0) || juniorTranche.tokenSupply() == 0) {
+        if (juniorTranche.tokenSupply() == 0) {
             return Fixed27(ONE);
         }
         uint256 totalAssets = calcAssets(nav_, reserve_);

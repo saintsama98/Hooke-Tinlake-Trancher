@@ -82,6 +82,8 @@ Everything else is calibration and is meant to be replaced:
 - **The off-chain solver is `virtual`, not transcribed.** The state machine and the constraint checks are exact. The weights that rank a submission are a policy choice, so they are an override rather than a prerequisite.
 - **Error codes renumbered to Tinlake's.** The previous `ERR_MAX_RESERVE = -2` collided with Tinlake's `ERR_MAX_ORDER`.
 - **Empty epochs key by `lastEpochExecuted + 1`.** Tinlake keys them by `currentEpoch`, which agrees with the execution path only while no epoch is ever skipped.
+- **A pool with holders and no assets prices its tokens at zero.** Tinlake priced both tranches at par whenever nav and reserve were both zero, so a wiped pool did not start closing and sold new junior tokens at par, which the old senior could then redeem. Par now applies only to a tranche with no tokens out.
+- **Senior interest keeps sub-wei accrual and never runs backwards.** Tinlake moves the senior interest clock on every drip, which drops accrual too small to book. Here the clock stays put while a nonzero debt at a nonzero rate has not yet grown, moves whenever there is nothing to accrue, and restarts when the senior debt is rewritten or the rate changes, so new debt or a new rate never accrues over the time before it.
 
 ## Roles
 
@@ -111,6 +113,9 @@ forge test
 | `test/scenario/SubmissionPeriod.t.sol` | The submission period: the best submission wins, base constraints are absolute, no submission outside the period |
 | `test/scenario/System.t.sol` | Complete epochs: full lifecycle, redeem round trip, senior first fills, junior first losses, pool closure when junior is wiped out, empty epochs, auth gating |
 | `test/unit/Interest.t.sol` | The compounding guards: future timestamps and a zero rate revert with custom errors, a unit rate charges nothing |
+| `test/unit/Assessor.t.sol` | The assessor alone: senior interest starts when debt is booked or the rate changes, sub-wei accrual is kept, the waterfall conserves and fills senior first, prices split assets by claim and floor junior at zero, admin calls are gated |
+| `test/unit/Auth.t.sol` | Ward authorization: rely and deny with their events, a revoked or unknown caller reverts |
+| `test/exploit/WipedPoolPricing.t.sol` | Regressions for a wiped pool selling tokens at par and for supply filled into a closing pool |
 | `test/invariant/PoolInvariants.t.sol` | Seven stateful invariants over a handler (`test/invariant/handlers/PoolHandler.sol`) that drives orders, epochs, NAV moves and losses: I1 to I3, cash conservation, the reserve ledger matching its balance, and tokens held only by lenders or escrow |
 
 Fuzz and invariant runs are set per profile in `foundry.toml`: the default profile for local runs, `pr` for pull requests and `ci` for pushes to `main`. `FOUNDRY_PROFILE=ci forge test` reproduces the deepest run.
