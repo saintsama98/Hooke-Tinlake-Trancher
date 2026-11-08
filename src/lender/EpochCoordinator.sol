@@ -361,8 +361,8 @@ contract EpochCoordinator is Auth, Math, Sacred {
     {
         int256 valid = validate(seniorRedeem, juniorRedeem, seniorSupply, juniorSupply);
 
-        // every proposal has to satisfy the base constraints, without exception
-        if (valid == ERR_CURRENCY_AVAILABLE || valid == ERR_MAX_ORDER) {
+        // every proposal has to satisfy the base constraints, and a closing pool takes no supply, without exception
+        if (valid == ERR_CURRENCY_AVAILABLE || valid == ERR_MAX_ORDER || valid == ERR_POOL_CLOSING) {
             return valid;
         }
 
